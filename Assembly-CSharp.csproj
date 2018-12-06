@@ -61,7 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\manageUI.cs" />
+    <Compile Include="Assets\Scripts\manageUI.cs" />
     <Compile Include="Assets\Scripts\movementPlayer.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/RICARDO/Documents/projeto_dj/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
