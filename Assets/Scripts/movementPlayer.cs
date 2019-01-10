@@ -24,9 +24,15 @@ public class movementPlayer : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
+        RestrictRotation();
         ManageInputs();
 		
 	}
+
+    private void RestrictRotation()
+    {
+        this.transform.rotation = Quaternion.Euler(Vector3.zero);
+    }
 
     //lidar com inputs
     private void ManageInputs()
@@ -37,7 +43,6 @@ public class movementPlayer : MonoBehaviour {
         #region moving
         if (horizontal != 0)
         {
-            print("Moving Horizontal");
             Vector3 newPosition = transform.position;
             newPosition += new Vector3(horizontal * MovementSpeed * Time.deltaTime, 0, 0);
             transform.position = newPosition;
@@ -46,8 +51,7 @@ public class movementPlayer : MonoBehaviour {
 
         #region gravity changing
         if (switchGravity != 0 && TimeToChangeGravity < Time.time)
-        {
-            print("Changed Gravity");            
+        {   
             TimeToChangeGravity = Time.time + GravityChangeInterval;
             CanChangeGravity = false;
             this.GetComponent<Rigidbody2D>().gravityScale = -this.GetComponent<Rigidbody2D>().gravityScale*4;
