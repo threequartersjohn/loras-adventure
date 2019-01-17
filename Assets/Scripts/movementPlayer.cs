@@ -45,6 +45,15 @@ public class movementPlayer : MonoBehaviour {
         {
             Vector3 newPosition = transform.position;
             newPosition += new Vector3(horizontal * MovementSpeed * Time.deltaTime, 0, 0);
+            if (newPosition.x > transform.position.x && transform.localScale.x < 0)
+            {
+                flipObjectHorizontal();
+            }
+
+            else if (newPosition.x < transform.position.x && transform.localScale.x > 0)
+            {
+                flipObjectHorizontal();
+            }
             transform.position = newPosition;
         }
         #endregion
@@ -55,6 +64,7 @@ public class movementPlayer : MonoBehaviour {
             TimeToChangeGravity = Time.time + GravityChangeInterval;
             CanChangeGravity = false;
             this.GetComponent<Rigidbody2D>().gravityScale = -this.GetComponent<Rigidbody2D>().gravityScale*4;
+            flipObjectVertical();
         }
 
         if (this.GetComponent<Rigidbody2D>().gravityScale > 1)
@@ -68,4 +78,23 @@ public class movementPlayer : MonoBehaviour {
         }
         #endregion
     }
+
+    private void flipObjectVertical()
+    {
+        print("inverted");
+        Vector3 OriginalLocalScale = this.transform.localScale;
+        OriginalLocalScale.y *= -1;
+        this.transform.localScale = OriginalLocalScale;
+        
+    }
+
+    private void flipObjectHorizontal()
+    {
+        print("inverted");
+        Vector3 OriginalLocalScale = this.transform.localScale;
+        OriginalLocalScale.x *= -1;
+        this.transform.localScale = OriginalLocalScale;
+
+    }
 }
+
