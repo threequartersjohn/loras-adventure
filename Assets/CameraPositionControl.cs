@@ -11,8 +11,11 @@ public class CameraPositionControl : MonoBehaviour {
     //Camera offset and limits
     [SerializeField]
     float CameraOffsetValue;
+    [SerializeField]
+    float CameraOffsetSpeed;
     Vector3 CameraOffset;
     const float LOWER_LIMIT = 0;
+    
     
     //Player variables
     Transform PlayerTransform;
@@ -28,13 +31,24 @@ public class CameraPositionControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        ManageInputs();
+
         PlayerPosition = PlayerTransform.position.y;
-        
         Vector3 newCameraPosition = new Vector3(this.transform.position.x, 
                                                 Mathf.Clamp(PlayerPosition, 0, PlayerPosition), 
                                                 this.transform.position.z);
 
-        this.transform.position = newCameraPosition;
+        this.transform.position = newCameraPosition + CameraOffset;
 
 	}
+
+    private void ManageInputs()
+    {
+        float offset = Input.GetAxis(VerticalCameraOffsetInput);
+
+        if (offset != 0)
+        {
+            CameraOffset.y = CameraOffsetValue * offset * CameraOffsetSpeed ;
+        }
+    }
 }
