@@ -48,27 +48,27 @@ public class movementPlayer : MonoBehaviour {
 		
 	}
 
-    //parar animaçã
-
     //eventos em colisões
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
         print("collision found");
+
         //se encontrar floors
         if (collision.gameObject.CompareTag("Floor")) {
-            print("hit floor");
-            animator.ResetTrigger("fall");
+
             animator.SetTrigger("hitFloor");
 
             falling = false;
 
         }
+
+        falling = false;
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        animator.ResetTrigger("wall");
+        animator.ResetTrigger("walk");
         animator.ResetTrigger("stopMoving");
         animator.ResetTrigger("hitFloor");
 
@@ -102,12 +102,9 @@ public class movementPlayer : MonoBehaviour {
         else if (!falling)
         {
             animator.ResetTrigger("fall");
-            animator.ResetTrigger("hitFloor");
             animator.ResetTrigger("walk");
 
             animator.SetTrigger("stopMoving");
-
-
         }
 
         #region moving
@@ -124,6 +121,8 @@ public class movementPlayer : MonoBehaviour {
             {
                 flipObjectHorizontal();
             }
+
+
 
             newPosition.x = Mathf.Clamp(newPosition.x, -HorizontalLimit, HorizontalLimit);
             transform.position = newPosition;
@@ -157,7 +156,7 @@ public class movementPlayer : MonoBehaviour {
         #endregion
     }
 
-    #region object control
+    #region flip object control
 
     //inverter vertical
     private void flipObjectVertical()
