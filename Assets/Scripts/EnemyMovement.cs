@@ -24,11 +24,10 @@ public class EnemyMovement : MonoBehaviour {
 
     private void HandleDirectionChange()
     {
-
-        print(Mathf.Abs(this.transform.position.x));    
+   
         if (Mathf.Abs(this.transform.position.x) > HorizontalLimit)
         { 
-            print("Direction change");
+            print("Enemy direction change");
             MoveLeft = !MoveLeft;
             flipObjectHorizontal();
         }
@@ -36,14 +35,11 @@ public class EnemyMovement : MonoBehaviour {
 
     private void HandleMovement()
     {
-        print("movement change");
-
         Vector3 newPosition = this.transform.position;
         if (MoveLeft == true) newPosition.x -= HorizontalSpeed * Time.deltaTime;
         else newPosition.x += HorizontalSpeed * Time.deltaTime;
 
         this.transform.position = newPosition;
-        print(this.transform.position.x);
     }
 
     private void flipObjectHorizontal()

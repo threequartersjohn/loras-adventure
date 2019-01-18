@@ -8,20 +8,39 @@ public class movementPlayer : MonoBehaviour {
 
     //inputs
     [SerializeField]
+    [Tooltip("Gameplay Inputs.")]
     private string HorizontalMovementInput, GravityChangeInput;
 
+    //velocidade
     [SerializeField]
+    [Tooltip("Movement speed of player.")]
     private float MovementSpeed;
 
-    //change gravity interval
     [SerializeField]
+    [Tooltip("Limit in units that defines the edge of the world.")]
+    private float HorizontalLimit;
+
+    //estado
+    private bool falling = false;
+
+    //gravidade
+    [SerializeField]
+    [Tooltip("Interval during which player cannot change gravity.")]
     private float GravityChangeInterval;
     private bool CanChangeGravity = true;
+    [HideInInspector]
     public float TimeToChangeGravity = 0f;
+
+    //animation
+    private Animator animator;
 
     #endregion
 
-    // Update is called once per frame
+    void Start()
+    {
+        animator = this.GetComponent<Animator>();
+    }
+
     void Update () {
 
         RestrictRotation();
@@ -29,6 +48,36 @@ public class movementPlayer : MonoBehaviour {
 		
 	}
 
+    //parar animaçã
+
+    //eventos em colisões
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+        print("collision found");
+        //se encontrar floors
+        if (collision.gameObject.CompareTag("Floor")) {
+            print("hit floor");
+            animator.ResetTrigger("fall");
+            animator.SetTrigger("hitFloor");
+
+            falling = false;
+
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        animator.ResetTrigger("wall");
+        animator.ResetTrigger("stopMoving");
+        animator.ResetTrigger("hitFloor");
+
+        animator.SetTrigger("fall");
+
+        falling = true;
+    }
+
+    //restringir rotação
     private void RestrictRotation()
     {
         this.transform.rotation = Quaternion.Euler(Vector3.zero);
@@ -37,14 +86,35 @@ public class movementPlayer : MonoBehaviour {
     //lidar com inputs
     private void ManageInputs()
     {
-        float horizontal = Input.GetAxis(HorizontalMovementInput);
-        float switchGravity = Input.GetAxis(GravityChangeInput);
+        float horizontal = Input.GetAxisRaw(HorizontalMovementInput);
+        float switchGravity = Input.GetAxisRaw(GravityChangeInput);
+
+
+        if(horizontal != 0 && !falling)
+        {
+            animator.ResetTrigger("fall");
+            animator.ResetTrigger("hitFloor");
+            animator.ResetTrigger("stopMoving");
+
+            animator.SetTrigger("walk");
+        }
+
+        else if (!falling)
+        {
+            animator.ResetTrigger("fall");
+            animator.ResetTrigger("hitFloor");
+            animator.ResetTrigger("walk");
+
+            animator.SetTrigger("stopMoving");
+
+
+        }
 
         #region moving
         if (horizontal != 0)
         {
             Vector3 newPosition = transform.position;
-            newPosition += new Vector3(horizontal * MovementSpeed * Time.deltaTime, 0, 0);
+            newPosition += new Vector3( horizontal * MovementSpeed * Time.deltaTime, 0, 0);
             if (newPosition.x > transform.position.x && transform.localScale.x < 0)
             {
                 flipObjectHorizontal();
@@ -54,6 +124,8 @@ public class movementPlayer : MonoBehaviour {
             {
                 flipObjectHorizontal();
             }
+
+            newPosition.x = Mathf.Clamp(newPosition.x, -HorizontalLimit, HorizontalLimit);
             transform.position = newPosition;
         }
         #endregion
@@ -65,6 +137,12 @@ public class movementPlayer : MonoBehaviour {
             CanChangeGravity = false;
             this.GetComponent<Rigidbody2D>().gravityScale = -this.GetComponent<Rigidbody2D>().gravityScale*4;
             flipObjectVertical();
+
+            falling = true;
+
+            //animations
+            animator.ResetTrigger("hitFloor");
+            animator.SetTrigger("fall");
         }
 
         if (this.GetComponent<Rigidbody2D>().gravityScale > 1)
@@ -79,6 +157,9 @@ public class movementPlayer : MonoBehaviour {
         #endregion
     }
 
+    #region object control
+
+    //inverter vertical
     private void flipObjectVertical()
     {
         print("inverted");
@@ -88,6 +169,7 @@ public class movementPlayer : MonoBehaviour {
         
     }
 
+    //inverter horizontal
     private void flipObjectHorizontal()
     {
         print("inverted");
@@ -96,5 +178,7 @@ public class movementPlayer : MonoBehaviour {
         this.transform.localScale = OriginalLocalScale;
 
     }
+    #endregion
 }
+
 
