@@ -14,14 +14,20 @@ public class movementPlayer : MonoBehaviour {
     //velocidade
     [SerializeField]
     [Tooltip("Movement speed of player.")]
-    private float MovementSpeed;
+    public float MovementSpeed;
 
+    //limite de movimento horizontal
     [SerializeField]
     [Tooltip("Limit in units that defines the edge of the world.")]
     private float HorizontalLimit;
 
     //estado
     private bool falling = false;
+
+    //pontos
+    [HideInInspector]
+    public float points = 0f;
+    private float startPosition = 0f;
 
     //gravidade
     [SerializeField]
@@ -31,6 +37,10 @@ public class movementPlayer : MonoBehaviour {
     [HideInInspector]
     public float TimeToChangeGravity = 0f;
 
+    //manager
+    private GameObject GameManager;
+    private bool alive = true;
+
     //animation
     private Animator animator;
 
@@ -38,16 +48,21 @@ public class movementPlayer : MonoBehaviour {
 
     void Start()
     {
+        GameManager = GameObject.Find("GameManager");
         animator = this.GetComponent<Animator>();
+        startPosition = this.transform.position.y;
+
     }
 
     void Update () {
 
-        RestrictRotation();
-        ManageInputs();
+        //não atualizar se morto
+        if (!alive) this.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        else  ManageInputs();        
+
+        RestrictRotation();       
 		
 	}
-
     //eventos em colisões
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -61,9 +76,19 @@ public class movementPlayer : MonoBehaviour {
 
             falling = false;
 
+            points = Mathf.Ceil(this.transform.position.y - startPosition);
+
         }
 
-        falling = false;
+        //se encontrar inimigos
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            print("die");
+            GameManager.GetComponent<Manager>().endGame();
+
+        }
+
+        
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -131,7 +156,8 @@ public class movementPlayer : MonoBehaviour {
 
         #region gravity changing
         if (switchGravity != 0 && TimeToChangeGravity < Time.time)
-        {   
+        {               
+
             TimeToChangeGravity = Time.time + GravityChangeInterval;
             CanChangeGravity = false;
             this.GetComponent<Rigidbody2D>().gravityScale = -this.GetComponent<Rigidbody2D>().gravityScale*4;
@@ -178,6 +204,13 @@ public class movementPlayer : MonoBehaviour {
 
     }
     #endregion
+
+    public void KillPlayer()
+    {
+        animator.speed = 0;
+        Physics2D.gravity = Vector2.zero;
+        alive = false;        
+    }
 }
 
 

@@ -12,6 +12,7 @@ public class manageUI : MonoBehaviour {
     [SerializeField]
     private GameObject player;
     private movementPlayer movementPlayer;
+    private bool GameOver = false;
 
 	// Use this for initialization
 	void Start () {
@@ -21,13 +22,34 @@ public class manageUI : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        ManageDebugText();
+        if (GameOver)
+        {
 
+
+        }
+
+        else
+        {
+            ManageDebugText();
+        }
+
+        
+
+    }
+
+    public void SetGameOver()
+    {
+        GameOver = true;
+
+        text.text = "";
     }
 
     void ManageDebugText()
     {
-        string DebugText = "Time to Change: " + ((Mathf.Round((movementPlayer.TimeToChangeGravity - Time.time) * 100f) / 100f)).ToString() + "\n";
+        string DebugText = "Points: " + movementPlayer.points + "\n";
+
+        DebugText += "Time to Change: " + ((Mathf.Round((movementPlayer.TimeToChangeGravity - Time.time) * 100f) / 100f)).ToString() + "\n";
+        
         if (player.GetComponent<Rigidbody2D>().gravityScale < 0)
         {
             DebugText += "Pulling UP\n";
@@ -37,6 +59,7 @@ public class manageUI : MonoBehaviour {
         {
             DebugText += "Pulling DOWN\n";
         }
+        
 
         text.text = DebugText;
     }

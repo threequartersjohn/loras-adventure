@@ -6,14 +6,19 @@ public class EnemyMovement : MonoBehaviour {
 
     [SerializeField]
     float HorizontalLimit;
-    [SerializeField]
-    float HorizontalSpeed;
+    public float HorizontalSpeed;
 
     bool MoveLeft = true;
+    [HideInInspector]
+    public bool StartLeft = false;
 
 	// Use this for initialization
 	void Start () {
-		
+		if (StartLeft)
+        {
+            HorizontalSpeed = -HorizontalSpeed;
+            flipObjectHorizontal();
+        }
 	}
 	
 	// Update is called once per frame

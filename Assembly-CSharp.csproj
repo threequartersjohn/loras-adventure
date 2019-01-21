@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\CameraPositionControl.cs" />
     <Compile Include="Assets\Scripts\EnemyMovement.cs" />
+    <Compile Include="Assets\Scripts\Manager.cs" />
     <Compile Include="Assets\Scripts\manageUI.cs" />
     <Compile Include="Assets\Scripts\movementPlayer.cs" />
     <Compile Include="Assets\Scripts\PopulateLevel.cs" />
