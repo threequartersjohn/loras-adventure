@@ -40,7 +40,8 @@ public class movementPlayer : MonoBehaviour {
 
     //manager
     private GameObject GameManager;
-    private bool alive = true;
+    [HideInInspector]
+    public bool alive = false;
 
     //animation
     private Animator animator;
@@ -64,11 +65,10 @@ public class movementPlayer : MonoBehaviour {
         RestrictRotation();       
 		
 	}
+
     //eventos em colisões
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
-        print("collision found");
 
         //se encontrar floors
         if (collision.gameObject.CompareTag("Floor")) {
@@ -84,7 +84,8 @@ public class movementPlayer : MonoBehaviour {
         //se encontrar inimigos
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            print("die");
+            alive = false;
+            GameObject.Find("Main Camera").GetComponent<CameraPositionControl>().BeginShake();
             GameManager.GetComponent<Manager>().endGame();
 
         }
@@ -195,7 +196,6 @@ public class movementPlayer : MonoBehaviour {
     //inverter vertical
     private void flipObjectVertical()
     {
-        print("inverted");
         Vector3 OriginalLocalScale = this.transform.localScale;
         OriginalLocalScale.y *= -1;
         this.transform.localScale = OriginalLocalScale;
@@ -205,7 +205,6 @@ public class movementPlayer : MonoBehaviour {
     //inverter horizontal
     private void flipObjectHorizontal()
     {
-        print("inverted");
         Vector3 OriginalLocalScale = this.transform.localScale;
         OriginalLocalScale.x *= -1;
         this.transform.localScale = OriginalLocalScale;

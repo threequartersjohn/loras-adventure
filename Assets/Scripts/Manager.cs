@@ -4,7 +4,15 @@ using UnityEngine;
 
 public class Manager : MonoBehaviour {
 
+    [SerializeField]    
     private GameObject[] Enemies;
+    [SerializeField]
+    private GameObject StartUI;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space)) startGame();
+    }
 
     public void findEnemies()
     {
@@ -23,9 +31,22 @@ public class Manager : MonoBehaviour {
         //stop player
         GameObject.FindGameObjectWithTag("Player").GetComponent<movementPlayer>().KillPlayer();
 
+        //stop music
+        GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
+
+        //play death music
+        GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().Play();
+
         //change UI
         GameObject.Find("UI").GetComponent<manageUI>().SetGameOver();
 
+    }
+
+    public void startGame()
+    {
+        StartUI.SetActive(false);
+        GameObject.Find("Main Camera").GetComponent<AudioSource>().volume = 0.4f;
+        GameObject.FindGameObjectWithTag("Player").GetComponent<movementPlayer>().alive = true;
     }
 
     

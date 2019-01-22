@@ -37,7 +37,7 @@ public class manageUI : MonoBehaviour {
 
         else
         {
-            ManageDebugText();
+            //ManageDebugText();
         }
 
         

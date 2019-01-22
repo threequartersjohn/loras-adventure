@@ -32,7 +32,6 @@ public class EnemyMovement : MonoBehaviour {
    
         if (Mathf.Abs(this.transform.position.x) > HorizontalLimit)
         { 
-            print("Enemy direction change");
             MoveLeft = !MoveLeft;
             flipObjectHorizontal();
         }
@@ -49,7 +48,7 @@ public class EnemyMovement : MonoBehaviour {
 
     private void flipObjectHorizontal()
     {
-        print("inverted");
+
         Vector3 OriginalLocalScale = this.transform.localScale;
         OriginalLocalScale.x *= -1;
         this.transform.localScale = OriginalLocalScale;

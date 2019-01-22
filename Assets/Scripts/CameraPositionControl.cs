@@ -22,15 +22,19 @@ public class CameraPositionControl : MonoBehaviour {
     const float LOWER_LIMIT = 0;
 
     [SerializeField]
+    [Tooltip("The color that the background interpolates towards")]
     Color nightColor;
     Color dayColor;
+
+    //shakeshake
+    [SerializeField]
+    private float DecreaseShakeValue, ShakeValue;
+    private float shake = 0f;
     
     //Player variables
     Transform PlayerTransform;
     float PlayerPosition = 0;
     float OriginalPlayerPosition = 0;
-
-
 
     #endregion
 
@@ -48,22 +52,38 @@ public class CameraPositionControl : MonoBehaviour {
 
         ChangeColor();
 
+        UpdatePosition();
+
+        if (shake>0) ShakeCamera();
+
+    }
+
+    private void ShakeCamera()
+    {
+        Vector2 newPosition = Random.insideUnitCircle * shake;
+        this.transform.localPosition = new Vector3(this.transform.localPosition.x + newPosition.x,
+                                                   this.transform.localPosition.y + newPosition.y,
+                                                   this.transform.localPosition.z);
+        shake -= DecreaseShakeValue * Time.deltaTime;
+
+    }
+
+    private void UpdatePosition()
+    {
         PlayerPosition = PlayerTransform.position.y;
-        Vector3 newCameraPosition = new Vector3(this.transform.position.x, 
-                                                Mathf.Clamp(PlayerPosition, 0, PlayerPosition), 
+        Vector3 newCameraPosition = new Vector3(this.transform.position.x,
+                                                Mathf.Clamp(PlayerPosition, 0, PlayerPosition),
                                                 this.transform.position.z);
 
         newCameraPosition += CameraOffset;
         newCameraPosition.y = Mathf.Clamp(newCameraPosition.y, 0, newCameraPosition.y);
 
         this.transform.position = newCameraPosition;
-            
-
-	}
+    }
 
     private void ChangeColor()
     {
-        this.GetComponent<Camera>().backgroundColor = Color.Lerp(dayColor, nightColor, (this.transform.position.y / 2 - 10) / 100);
+        this.GetComponent<Camera>().backgroundColor = Color.Lerp(dayColor, nightColor, (this.transform.position.y / 1.5f - 10) / 100);
     }
 
     private void ManageInputs()
@@ -74,5 +94,10 @@ public class CameraPositionControl : MonoBehaviour {
         {
             CameraOffset.y = CameraOffsetValue * offset * CameraOffsetSpeed;
         }
+    }
+
+    public void BeginShake()
+    {
+        shake = ShakeValue;
     }
 }
