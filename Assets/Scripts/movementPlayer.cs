@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class movementPlayer : MonoBehaviour {
 
@@ -115,6 +116,13 @@ public class movementPlayer : MonoBehaviour {
         float switchGravity = Input.GetAxisRaw(GravityChangeInput);
 
 
+        //die if below ground
+        if (this.transform.position.y < -7)
+        {
+            GameObject.Find("GameManager").GetComponent<Manager>().endGame();
+        }
+        
+
         if(horizontal != 0 && !falling)
         {
             animator.ResetTrigger("fall");
@@ -208,7 +216,7 @@ public class movementPlayer : MonoBehaviour {
     public void KillPlayer()
     {
         animator.speed = 0;
-        Physics2D.gravity = Vector2.zero;
+        this.GetComponent<Rigidbody2D>().gravityScale = 0f;
         alive = false;        
     }
 }

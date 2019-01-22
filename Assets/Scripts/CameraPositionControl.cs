@@ -20,6 +20,10 @@ public class CameraPositionControl : MonoBehaviour {
     float CameraOffsetSpeed;
     Vector3 CameraOffset;
     const float LOWER_LIMIT = 0;
+
+    [SerializeField]
+    Color nightColor;
+    Color dayColor;
     
     //Player variables
     Transform PlayerTransform;
@@ -34,6 +38,7 @@ public class CameraPositionControl : MonoBehaviour {
     void Start () {
         PlayerTransform = GameObject.Find("Player").transform;
         OriginalPlayerPosition = PlayerTransform.position.y;
+        dayColor = this.GetComponent<Camera>().backgroundColor;
     }
 	
 	// Update is called once per frame
@@ -41,14 +46,25 @@ public class CameraPositionControl : MonoBehaviour {
 
         ManageInputs();
 
+        ChangeColor();
+
         PlayerPosition = PlayerTransform.position.y;
         Vector3 newCameraPosition = new Vector3(this.transform.position.x, 
                                                 Mathf.Clamp(PlayerPosition, 0, PlayerPosition), 
                                                 this.transform.position.z);
 
-        this.transform.position = newCameraPosition + CameraOffset;
+        newCameraPosition += CameraOffset;
+        newCameraPosition.y = Mathf.Clamp(newCameraPosition.y, 0, newCameraPosition.y);
+
+        this.transform.position = newCameraPosition;
+            
 
 	}
+
+    private void ChangeColor()
+    {
+        this.GetComponent<Camera>().backgroundColor = Color.Lerp(dayColor, nightColor, (this.transform.position.y / 2 - 10) / 100);
+    }
 
     private void ManageInputs()
     {
@@ -56,7 +72,7 @@ public class CameraPositionControl : MonoBehaviour {
 
         if (offset != 0)
         {
-            CameraOffset.y = CameraOffsetValue * offset * CameraOffsetSpeed ;
+            CameraOffset.y = CameraOffsetValue * offset * CameraOffsetSpeed;
         }
     }
 }

@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class manageUI : MonoBehaviour {
 
     [SerializeField]
-    private Text text;
+    private Text gameText;
 
     [SerializeField]
-    private GameObject player;
+    private GameObject player, EndText, EndBackgroundImage;
+    private Text EndGameText;
     private movementPlayer movementPlayer;
     private bool GameOver = false;
 
 	// Use this for initialization
 	void Start () {
+        EndGameText = EndText.GetComponent<Text>();
         movementPlayer = player.GetComponent<movementPlayer>();
 	}
 	
@@ -24,7 +27,11 @@ public class manageUI : MonoBehaviour {
 
         if (GameOver)
         {
-
+            if (Input.GetKey("r"))
+            {
+                print("reset?");
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
 
         }
 
@@ -40,8 +47,14 @@ public class manageUI : MonoBehaviour {
     public void SetGameOver()
     {
         GameOver = true;
+        EndText.SetActive(true);
+        EndBackgroundImage.SetActive(true);
 
-        text.text = "";
+        EndGameText.text += "Pontos: " + player.GetComponent<movementPlayer>().points;
+        EndGameText.text += "\n\nPressione R para Recomeçar";
+
+
+        gameText.text = "";
     }
 
     void ManageDebugText()
@@ -59,8 +72,8 @@ public class manageUI : MonoBehaviour {
         {
             DebugText += "Pulling DOWN\n";
         }
-        
 
-        text.text = DebugText;
+
+        gameText.text = DebugText;
     }
 }

@@ -67,12 +67,10 @@ public class PopulateLevel : MonoBehaviour {
             {
                 GameObject NewEnemy = Instantiate(Enemy,
                                               new Vector3(Mathf.Ceil(Random.Range(-9f, 5f)),
-                                               (0.5f + x * DistanceBetweenPlatform)), Quaternion.Euler(Vector3.zero));
+                                               (4.5f + x * DistanceBetweenPlatform)), Quaternion.Euler(Vector3.zero));
 
                 //if right, right
                 if (Mathf.Round(chanceToMoveRight) >= 1) NewEnemy.GetComponent<EnemyMovement>().StartLeft = true;
-                print(chanceToMoveRight);
-                print(Mathf.Round(chanceToMoveRight) >= 1);
 
 
                 //add do enemy list
